@@ -3,7 +3,7 @@ import cron from "node-cron";
 import connectors from "../connectors";
 import { upsertJobsBulk } from "../db/job.repository";
 
-cron.schedule("*/* 5 * * *", async () => {
+cron.schedule("*/1 * * * *", async () => {
   console.log("Sync started");
 
   await Promise.all(

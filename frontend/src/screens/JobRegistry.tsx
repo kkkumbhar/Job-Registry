@@ -6,7 +6,7 @@ import JobTable from "./jobs/components/JobTable";
 import JobFilters from "../components/JobFilters";
 import JobTableToolbar from "./components/JobTableToolbar";
 import type { Job } from "../types/jobs";
-import { formatDuration } from "./jobs/components/JobDuration";
+import { formatDuration } from "../utils/formatDuration";
 import useDebounce from "../hooks/useDebounce";
 import { useGetJobsQuery, useGetJobStatsQuery } from "../components/api/Job";
 import InfoIcon from "../assets/InfoIcon.svg";
@@ -34,7 +34,7 @@ export default function JobRegistry({ parentJobId }: { parentJobId?: string }) {
     // Manage search state locally instead of from context
     const [searchValue, setSearchValue] = useState("");
     const debouncedSearchValue = useDebounce(searchValue, 500);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [offset, setOffset] = useState(0);
 
     // Filter states

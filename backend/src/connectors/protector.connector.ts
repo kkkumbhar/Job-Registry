@@ -77,8 +77,8 @@ export class ProtectorConnector extends BaseConnector<any> {
 
       const res = await this.client.get("/master/JobHandler/objects/Jobs", {
         params: {
-          "order-by": "masterTimeStarted DESC",
-          query: `(masterTimeStarted>=${startTime})`,
+          // "order-by": "masterTimeStarted DESC",
+          // query: `(masterTimeStarted>=${startTime})`,
           count: 10000,
           offset: 0,
         },
@@ -103,8 +103,8 @@ export class ProtectorConnector extends BaseConnector<any> {
       name: job.description,
       status: job.status,
       metadata: job,
-      started_at: new Date(job.masterTimeStarted),
-      finished_at: new Date(job.masterTimeCompleted),
+      started_at: job.masterTimeStarted,
+      finished_at: job.masterTimeCompleted,
     };
   }
 }

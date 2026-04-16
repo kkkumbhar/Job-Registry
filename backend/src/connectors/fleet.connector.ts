@@ -68,10 +68,10 @@ export class FleetConnector extends BaseConnector<any> {
     await this.loginIfNeeded();
 
     const res = await this.client.get(`/jobs`, {
-      // params: {
-      //   count: 10000,
-      //   offset: 0,
-      // },
+      params: {
+        count: 10000,
+        offset: 0,
+      },
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
