@@ -1,5 +1,6 @@
 // ...existing code...
 backend/node_modules
+backend/dist
 # Keep environment variables out of version control
 .env
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Typography, Box, Tabs, Tab } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import SearchBox from "./SearchBox/SearchBox";
 import { SEARCH_PLACEHOLDER } from "../jobs/components/Constants";
 

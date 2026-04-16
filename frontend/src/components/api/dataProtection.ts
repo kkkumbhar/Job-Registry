@@ -1,7 +1,12 @@
 import axios from "axios";
 
-// Use environment variable or default to localhost:3000 for development
-const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+// Prefer explicit API base URL, then API host URL, then local backend default.
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
+
+const baseURL = apiBaseUrl
+    || (apiUrl ? `${apiUrl.replace(/\/$/, "")}/api` : undefined)
+    || "http://localhost:3001/api";
 
 const dataProtectionClient = axios.create({
     baseURL: baseURL,
