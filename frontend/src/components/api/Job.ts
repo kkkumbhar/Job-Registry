@@ -177,6 +177,10 @@ export const useGetJobStatsQuery = (
         queryParams.name = params.name;
       }
 
+      if(params?.sources && params.sources.length > 0) {
+        queryParams.sources = params.sources.join(",");
+      }
+
       const response = await dataProtectionClient.get(`/jobs/stats`, {
         params: queryParams,
       });

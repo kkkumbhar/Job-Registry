@@ -14,12 +14,7 @@ export class FleetConnector extends BaseConnector<any> {
 
     this.address = process.env.ADMINISTRATOR_ADDRESS!;
 
-    const platformMode =
-      (process.env.PLATFORM_MODE || "false").toLowerCase() === "true";
-
-    const contextPath = platformMode ? "" : "/fleetmanagement";
-
-    const baseURL = `${this.address}${contextPath}/v1`;
+    const baseURL = `${this.address}/fleetmanagement/v1`;
 
     this.client = axios.create({
       baseURL,
@@ -67,28 +62,72 @@ export class FleetConnector extends BaseConnector<any> {
   async fetchJobs(): Promise<any[]> {
     await this.loginIfNeeded();
 
-    const res = await this.client.get(`/jobs`, {
-      params: {
-        count: 10000,
-        offset: 0,
+    const headers = {
+      Authorization: `Bearer ${this.token}`,
+    };
+
+    // First request: fetch first 1000 jobs
+    const firstRes = await this.client.post(
+      `/es/job/_search`,
+      {
+        size: 1000,
+        from: 0,
+        track_total_hits: true,
+        sort: [
+          {
+            createdDate: {
+              order: "desc",
+            },
+          },
+        ],
       },
-      headers: {
-        Authorization: `Bearer ${this.token}`,
+      { headers }
+    );
+
+    const firstHits = firstRes.data.hits.hits || [];
+    const total = firstRes.data.hits.total?.value || 0;
+
+    console.log(`Fleet total jobs found: ${total}`);
+    // If total <= 1000, return immediately
+    if (total <= 1000) {
+      return firstHits;
+    }
+
+    // Second request: fetch remaining jobs
+    const secondRes = await this.client.post(
+      `/es/job/_search`,
+      {
+        size: total - 1000,
+        from: 1000,
+        track_total_hits: true,
+        sort: [
+          {
+            createdDate: {
+              order: "desc",
+            },
+          },
+        ],
       },
-    });
+      { headers }
+    );
+
+    const remainingHits = secondRes.data.hits.hits || [];
+
     console.log("Fleet jobs fetched");
-    return res.data.jobs || [];
+
+    return [...firstHits, ...remainingHits];
   }
 
-  normalize(job: any): Job {
+  normalizeData(job: any): Job {
+    const jobData = job._source;
     return {
-      external_id: job.jobId,
+      external_id: jobData.jobId,
       source: this.name,
-      name: job.title?.text,
-      status: job.status,
+      name: jobData.title?.text,
+      status: jobData.status,
       metadata: job,
-      started_at: new Date(job.createdDate),
-      finished_at: new Date(job.endDate),
+      started_at: new Date(jobData.createdDate),
+      finished_at: new Date(jobData.endDate),
     };
   }
 }

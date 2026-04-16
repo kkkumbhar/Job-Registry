@@ -71,32 +71,57 @@ export class ProtectorConnector extends BaseConnector<any> {
     await this.loginIfNeeded();
 
     try {
-      const startTime = get30DaysAgoISO();
-
       console.log("Fetching Protector jobs...");
+      const headers = {
+        Cookie: this.cookie!,
+      };
 
-      const res = await this.client.get("/master/JobHandler/objects/Jobs", {
-        params: {
-          // "order-by": "masterTimeStarted DESC",
-          // query: `(masterTimeStarted>=${startTime})`,
-          count: 10000,
-          offset: 0,
-        },
-        headers: {
-          Cookie: this.cookie!,
-        },
-      });
+      // First request
+      const firstRes = await this.client.get(
+        "/master/JobHandler/objects/Jobs",
+        {
+          params: {
+            count: 1000,
+            offset: 0,
+          },
+          headers,
+        }
+      );
+
+      const firstJobs = firstRes.data.job || firstRes.data.items || [];
+      const total = firstRes.data.pageInfo?.totalCount || 0;
+
+      console.log(`Protector total jobs found: ${total}`);
+
+      // If all jobs fit in first request
+      if (total <= 1000) {
+        return firstJobs;
+      }
+
+      // Second request for remaining jobs
+      const secondRes = await this.client.get(
+        "/master/JobHandler/objects/Jobs",
+        {
+          params: {
+            count: total - 1000,
+            offset: 1000,
+          },
+          headers,
+        }
+      );
+
+      const remainingJobs = secondRes.data.job || secondRes.data.items || [];
 
       console.log("Protector jobs fetched");
 
-      return res.data.job || res.data.items || [];
+      return [...firstJobs, ...remainingJobs];
     } catch (err: any) {
-      console.error("Protector fetch error:");
+      console.error("Protector fetch error");
       throw err;
     }
   }
 
-  normalize(job: any): Job {
+  normalizeData(job: any): Job {
     return {
       external_id: job.id,
       source: this.name,

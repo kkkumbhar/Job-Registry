@@ -8,5 +8,5 @@ export abstract class BaseConnector<T = any> {
   }
 
   abstract fetchJobs(): Promise<T[]>;
-  abstract normalize(job: T): Job;
+  abstract normalizeData(job: T): Job;
 }

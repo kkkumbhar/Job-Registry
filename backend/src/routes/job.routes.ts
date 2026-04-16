@@ -34,6 +34,7 @@ router.get("/stats", async (req: Request, res: Response) => {
   try {
     const result = await getJobStats({
       name: req.query.name as string,
+      source: req.query.sources as string,
     });
 
     res.json({

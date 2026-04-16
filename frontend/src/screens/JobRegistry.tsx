@@ -60,12 +60,16 @@ export default function JobRegistry({ parentJobId }: { parentJobId?: string }) {
             // Only pass statuses if not all are selected
             statuses:
                 selectedStatuses.length > 0 && selectedStatuses.length < availableStatuses.length
-                    ? selectedStatuses.map((s) => {
+                    ? selectedStatuses.flatMap((s) => {
                           // Map frontend status to backend enum format (eJOB_*)
-                          if (s === "Success") return "eJOB_SUCCEEDED";
-                          if (s === "Failed") return "eJOB_FAILED";
-                          if (s === "In Progress") return "eJOB_RUNNING";
-                          return s;
+                          if (s === "Success") return [
+                            "eJOB_SUCCEEDED",
+                            "SUCCESS",
+                            "SUCCESS_WITH_ERRORS",
+                          ];
+                          if (s === "Failed") return ["eJOB_FAILED", "FAILED"];
+                          if (s === "In Progress") return ["eJOB_RUNNING", "eJOB_INPROGRESS"];
+                          return [s];
                       })
                     : undefined,
             offset: offset,
@@ -76,14 +80,15 @@ export default function JobRegistry({ parentJobId }: { parentJobId?: string }) {
 
     // Get statistics for all jobs (not just current page)
     const { data: statsData } = useGetJobStatsQuery(
-        {
-            sources:
-                selectedSources.length > 0 && selectedSources.length < availableSources.length
-                    ? selectedSources
-                    : undefined,
-            name: debouncedSearchValue || undefined,
-        },
-        { refresh: true },
+      {
+        sources:
+          selectedSources.length > 0 &&
+          selectedSources.length < availableSources.length
+            ? selectedSources
+            : undefined,
+        name: debouncedSearchValue || undefined,
+      },
+      { refresh: true }
     );
 
     // To maintain the same Table style, force Data Protector jobs into the shape of the Provisioning jobs

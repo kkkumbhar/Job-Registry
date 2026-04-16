@@ -117,12 +117,26 @@ export async function getJobStats(filters: any = {}) {
       where: {
         ...where,
         status: {
-          [Op.in]: ["eJOB_SUCCEEDED", "SUCCESS"],
+          [Op.in]: ["eJOB_SUCCEEDED", "SUCCESS", "SUCCESS_WITH_ERRORS"],
         },
       },
     }),
-    Job.count({ where: { ...where, status: "eJOB_FAILED" } }),
-    Job.count({ where: { ...where, status: "eJOB_RUNNING" } }),
+    Job.count({
+      where: {
+        ...where,
+        status: {
+          [Op.in]: ["eJOB_FAILED", "FAILED"],
+        },
+      },
+    }),
+    Job.count({
+      where: {
+        ...where,
+        status: {
+          [Op.in]: ["eJOB_RUNNING", "eJOB_INPROGRESS"],
+        },
+      },
+    }),
   ]);
 
   return { total, successful, failed, running };
