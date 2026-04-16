@@ -1,4 +1,4 @@
-export const FAST_REFRESH_INTERVAL = 1 * 1000; 
+export const FAST_REFRESH_INTERVAL = 10 * 1000; 
 export const CACHE_TIME_SHORT = 10 * 1000; // 10 seconds
 export const LIST_CACHE_TIME = 1 * 60 * 1000; // 1 minute
 export const ITEM_CACHE_TIME = 5 * 60 * 1000; // 5 minutes

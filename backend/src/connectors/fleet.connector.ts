@@ -67,7 +67,7 @@ export class FleetConnector extends BaseConnector<any> {
   async fetchJobs(): Promise<any[]> {
     await this.loginIfNeeded();
 
-    const res = await this.client.get(`/jobs?parent_job_id=""`, {
+    const res = await this.client.get(`/jobs`, {
       // params: {
       //   count: 10000,
       //   offset: 0,

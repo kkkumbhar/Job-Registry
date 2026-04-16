@@ -1,0 +1,11 @@
+// ...existing code...
+backend/node_modules
+# Keep environment variables out of version control
+.env
+
+/src/generated/prisma
+
+# Ignore all node_modules folders
+node_modules/
+**/node_modules/
+# ...existing code...
