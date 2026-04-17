@@ -3,12 +3,6 @@ import https from "https";
 import { BaseConnector } from "./base.connector";
 import { Job } from "../types/job.types";
 
-function get30DaysAgoISO(): string {
-  const date = new Date();
-  date.setDate(date.getDate() - 30);
-  return date.toISOString();
-}
-
 export class ProtectorConnector extends BaseConnector<any> {
   private cookie: string | null = null;
   private client: AxiosInstance;
