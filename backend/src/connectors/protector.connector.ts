@@ -8,6 +8,7 @@ export class ProtectorConnector extends BaseConnector<any> {
   private client: AxiosInstance;
   private address: string;
   private version = "8.0";
+  private JobUrl = "/master/JobHandler/objects/Jobs";
 
   constructor() {
     super("protector");
@@ -71,16 +72,13 @@ export class ProtectorConnector extends BaseConnector<any> {
       };
 
       // First request
-      const firstRes = await this.client.get(
-        "/master/JobHandler/objects/Jobs",
-        {
-          params: {
-            count: 1000,
-            offset: 0,
-          },
-          headers,
-        }
-      );
+      const firstRes = await this.client.get(this.JobUrl, {
+        params: {
+          count: 1000,
+          offset: 0,
+        },
+        headers,
+      });
 
       const firstJobs = firstRes.data.job || firstRes.data.items || [];
       const total = firstRes.data.pageInfo?.totalCount || 0;
@@ -93,16 +91,13 @@ export class ProtectorConnector extends BaseConnector<any> {
       }
 
       // Second request for remaining jobs
-      const secondRes = await this.client.get(
-        "/master/JobHandler/objects/Jobs",
-        {
-          params: {
-            count: total - 1000,
-            offset: 1000,
-          },
-          headers,
-        }
-      );
+      const secondRes = await this.client.get(this.JobUrl, {
+        params: {
+          count: total - 1000,
+          offset: 1000,
+        },
+        headers,
+      });
 
       const remainingJobs = secondRes.data.job || secondRes.data.items || [];
 

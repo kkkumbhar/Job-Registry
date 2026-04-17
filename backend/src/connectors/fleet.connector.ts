@@ -8,6 +8,7 @@ export class FleetConnector extends BaseConnector<any> {
   private lastLogin = 0;
   private client: AxiosInstance;
   private address: string;
+  private jobUrl = "/es/job/_search";
 
   constructor() {
     super("fleet");
@@ -68,7 +69,7 @@ export class FleetConnector extends BaseConnector<any> {
 
     // First request: fetch first 1000 jobs
     const firstRes = await this.client.post(
-      `/es/job/_search`,
+      this.jobUrl,
       {
         size: 1000,
         from: 0,
@@ -95,7 +96,7 @@ export class FleetConnector extends BaseConnector<any> {
 
     // Second request: fetch remaining jobs
     const secondRes = await this.client.post(
-      `/es/job/_search`,
+      this.jobUrl,
       {
         size: total - 1000,
         from: 1000,
