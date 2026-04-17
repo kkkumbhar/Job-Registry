@@ -21,5 +21,5 @@ export async function runSync() {
   console.log("==== Sync done ====");
 }
 
-// Cron job runs every 5 mins
+// Runs every 5 mins
 cron.schedule("*/5 * * * *", runSync); 
