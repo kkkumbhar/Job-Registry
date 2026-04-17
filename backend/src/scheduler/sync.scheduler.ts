@@ -1,9 +1,8 @@
-
 import cron from "node-cron";
 import connectors from "../connectors";
 import { upsertJobsBulk } from "../db/job.repository";
 
-cron.schedule("*/5 * * * *", async () => { // Every 5 minute
+export async function runSync() {
   console.log("==== Sync started ====");
 
   await Promise.all(
@@ -13,11 +12,14 @@ cron.schedule("*/5 * * * *", async () => { // Every 5 minute
         const normalized = jobs.map((j: unknown) => c.normalizeData(j as any));
         await upsertJobsBulk(normalized);
         console.log(c.name, "done");
-      } catch (e:any) {
+      } catch (e: any) {
         console.error(c.name, e.message);
       }
     })
   );
 
   console.log("==== Sync done ====");
-});
+}
+
+// Cron job runs every 5 mins
+cron.schedule("*/5 * * * *", runSync); 

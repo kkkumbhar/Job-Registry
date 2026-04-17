@@ -34,28 +34,6 @@ export interface DataProtectionJob {
     source: string;
 }
 
-export interface ReportMessage {
-    text: string;
-    messageCode: string;
-    parameters: Record<string, unknown>;
-}
-
-export interface LogEntry {
-    id: string;
-    level: string;
-    log: string;
-    masterDate: string;
-    attachments: boolean;
-}
-
-export interface Attachment {
-    id: string;
-    contentType: string;
-    size: number;
-    content: string;
-    logId: string;
-}
-
 // Fleet Job Response
 export interface JobResponse {
     jobId: string;

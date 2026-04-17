@@ -1,5 +1,6 @@
 import { Job } from "../models/job.model";
 import { Op } from "sequelize";
+import { JobFilters } from "../types/job.types";
 
 export async function upsertJobsBulk(jobs: any[]) {
   if (!jobs.length) return;
@@ -26,18 +27,6 @@ export async function deleteOldJobs() {
   });
 
   return count;
-}
-
-interface JobFilters {
-  page?: number;
-  limit?: number;
-  status?: string;
-  name?: string;
-  source?: string;
-  started_at_from?: string;
-  started_at_to?: string;
-  finished_at_from?: string;
-  finished_at_to?: string;
 }
 
 export async function getJobs(filters: JobFilters) {
