@@ -5,7 +5,7 @@ const app = express();
 
 app.use(express.json());
 
-// Enable CORS for frontend communication
+// Enable CORS
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   const allowedOrigins = [
