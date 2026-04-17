@@ -4,7 +4,9 @@
 
 ```mermaid
 flowchart TD
-    A[Scheduler Trigger] --> B[Fetch Jobs from Connectors]
+    A[Protector Server] --> B[Fetch Jobs from Connectors]
+    A1[Fleet Server] --> B[Connectors : Fetch Jobs]
+    A2[... Other Servers] --> B[Connectors : Fetch Jobs]
     B --> C[Normalize Job Data]
     C --> D[Bulk Upsert Jobs]
     D --> E[(Database)]
